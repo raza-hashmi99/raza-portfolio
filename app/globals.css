@@ -29,7 +29,6 @@
   --mouse-y: 20%;
 }
 
-
 /* Dark mode visual identity */
 
 :root:not([data-theme="light"]) {
@@ -2870,7 +2869,7 @@ a {
 
   inset: 0;
 
-  z-index: 100;
+  z-index: 2000;
 
   display: grid;
   place-items: center;
@@ -4010,8 +4009,6 @@ a {
   }
 }
 
-
-
 /* Balanced cream dark mode refinement */
 html.dark .navbar {
   background: rgba(244, 235, 221, 0.055);
@@ -4210,7 +4207,6 @@ html.dark .modal-content {
   border-color: rgba(244, 235, 221, 0.15);
 }
 
-
 /* Centered Download CV card */
 .contact-links {
   display: grid;
@@ -4232,7 +4228,6 @@ html.dark .modal-content {
     width: 100%;
   }
 }
-
 
 /* Balanced typography refinement: readable, spacious, not oversized */
 .section-label,
@@ -4331,7 +4326,6 @@ html.dark .modal-content {
     font-size: 0.68rem;
   }
 }
-
 
 /* Interactive editorial project showcase */
 .projects-section .projects-showcase-heading { margin-bottom: clamp(28px, 4vw, 54px); }
@@ -4472,7 +4466,6 @@ html.dark .modal-content {
   .showcase-panel-main h3 { font-size: clamp(2rem, 10vw, 3rem); }
 }
 
-
 /* Project showcase: wider panel, less vertical height */
 .project-showcase {
   grid-template-columns: minmax(220px, 0.27fr) minmax(0, 1fr);
@@ -4528,8 +4521,6 @@ html.dark .modal-content {
     min-height: 470px;
   }
 }
-
-
 
 /* Light-only portfolio refinement: compact section rhythm and balanced surfaces */
 :root {
@@ -5144,7 +5135,6 @@ body {
   }
 }
 
-
 /* Final contact layout: icons + footer anchored at portfolio bottom */
 .contact-section {
   min-height: 100vh;
@@ -5323,5 +5313,132 @@ body {
   .brand-mark img {
     width: 38px;
     height: 38px;
+  }
+}
+
+
+/* Skills carousel */
+.skills-carousel {
+  position: relative;
+  width: 100%;
+  padding: 0 58px;
+}
+
+.skills-carousel .skills-grid {
+  display: grid;
+  grid-auto-columns: minmax(245px, 30%);
+  grid-auto-flow: column;
+  grid-template-columns: none;
+  gap: 16px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 8px 2px 18px;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  scrollbar-width: thin;
+  scrollbar-color: var(--accent) transparent;
+  cursor: grab;
+  touch-action: pan-x pan-y;
+  overscroll-behavior-x: contain;
+}
+
+.skills-carousel .skills-grid.is-dragging {
+  cursor: grabbing;
+  scroll-behavior: auto;
+  scroll-snap-type: none;
+  user-select: none;
+}
+
+.skills-carousel .skill-card {
+  min-width: 0;
+  scroll-snap-align: start;
+}
+
+.skills-carousel-arrow {
+  position: absolute;
+  top: 50%;
+  z-index: 5;
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 76px;
+  padding: 0;
+  border: 1px solid var(--border-strong);
+  border-radius: 15px;
+  background: var(--surface);
+  color: var(--accent);
+  font-size: 54px;
+  font-weight: 400;
+  line-height: 1;
+  cursor: pointer;
+  transform: translateY(-50%);
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.12);
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.skills-carousel-arrow:hover {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+  transform: translateY(-50%) scale(1.05);
+}
+
+.skills-carousel-arrow-left {
+  left: 0;
+}
+
+.skills-carousel-arrow-right {
+  right: 0;
+}
+
+.skills-carousel-arrow:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
+}
+
+@media (max-width: 700px) {
+  .skills-carousel {
+    padding: 0 36px;
+  }
+
+  .skills-carousel .skills-grid {
+    grid-auto-columns: minmax(220px, 82%);
+    gap: 12px;
+  }
+
+  .skills-carousel-arrow {
+    width: 32px;
+    height: 58px;
+    border-radius: 11px;
+    font-size: 42px;
+  }
+}
+
+/* Tighter section spacing */
+.section {
+  padding-top: clamp(64px, 7vw, 96px);
+  padding-bottom: clamp(64px, 7vw, 96px);
+}
+
+.section-intro {
+  margin-bottom: clamp(24px, 3vw, 40px);
+}
+
+.section-top {
+  margin-bottom: clamp(24px, 3vw, 40px);
+}
+
+.contact-section {
+  padding-top: clamp(64px, 7vw, 96px);
+  padding-bottom: clamp(64px, 7vw, 96px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skills-carousel .skills-grid {
+    scroll-behavior: auto;
+  }
+
+  .skills-carousel-arrow {
+    transition: none;
   }
 }

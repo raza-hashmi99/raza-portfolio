@@ -1,24 +1,40 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import type { PointerEvent as ReactPointerEvent } from "react";
 
 // Skills
+
 const skills = [
+
   { name: "Node.js", type: "Backend Runtime", level: 92 },
+
   { name: "NestJS", type: "Backend Framework", level: 88 },
+
   { name: "REST APIs", type: "Backend", level: 94 },
+
   { name: "React", type: "Frontend Library", level: 84 },
+
   { name: "Next.js", type: "Frontend Framework", level: 84 },
+
   { name: "TypeScript", type: "Programming", level: 82 },
+
   { name: "Tailwind CSS", type: "Styling", level: 82 },
+
   { name: "PostgreSQL", type: "Database", level: 86 },
+
   { name: "Supabase", type: "Database", level: 84 },
+
   { name: "Prisma", type: "ORM", level: 82 },
+
   { name: "Git / GitHub", type: "Tools", level: 90 },
+
   { name: "Postman", type: "API Tool", level: 91 },
+
 ];
 
 // Projects
+
 const projects = [
 
   {
@@ -160,6 +176,7 @@ const projects = [
 ];
 
 // Home
+
 export default function Home() {
 
   const [loaded, setLoaded] = useState(false);
@@ -169,6 +186,47 @@ export default function Home() {
     useState<(typeof projects)[number] | null>(null);
 
   const [activeShowcaseIndex, setActiveShowcaseIndex] = useState(0);
+  const skillsTrackRef = useRef<HTMLDivElement | null>(null);
+  const skillsDragRef = useRef({ isDragging: false, startX: 0, scrollLeft: 0 });
+
+  const scrollSkills = (direction: -1 | 1) => {
+    const track = skillsTrackRef.current;
+    if (!track) return;
+
+    track.scrollBy({
+      left: direction * Math.max(track.clientWidth * 0.72, 260),
+      behavior: "smooth",
+    });
+  };
+
+  const handleSkillsPointerDown = (event: ReactPointerEvent<HTMLDivElement>) => {
+    const track = skillsTrackRef.current;
+    if (!track || event.pointerType === "touch") return;
+
+    skillsDragRef.current = {
+      isDragging: true,
+      startX: event.clientX,
+      scrollLeft: track.scrollLeft,
+    };
+    track.classList.add("is-dragging");
+    track.setPointerCapture(event.pointerId);
+  };
+
+  const handleSkillsPointerMove = (event: ReactPointerEvent<HTMLDivElement>) => {
+    const track = skillsTrackRef.current;
+    if (!track || !skillsDragRef.current.isDragging) return;
+
+    event.preventDefault();
+    track.scrollLeft =
+      skillsDragRef.current.scrollLeft -
+      (event.clientX - skillsDragRef.current.startX);
+  };
+
+  const handleSkillsPointerUp = () => {
+    const track = skillsTrackRef.current;
+    skillsDragRef.current.isDragging = false;
+    track?.classList.remove("is-dragging");
+  };
 
   const showcaseProjects = [
 
@@ -473,11 +531,17 @@ export default function Home() {
             <div>
 
               <b>Next.js</b>
+
               <i />
+
               <b>React</b>
+
               <i />
+
               <b>NestJS</b>
+
               <i />
+
               <b>PostgreSQL</b>
 
             </div>
@@ -613,7 +677,9 @@ export default function Home() {
           <h2>
 
             From interface
+
             <br />
+
             <em>to infrastructure.</em>
 
           </h2>
@@ -722,48 +788,52 @@ export default function Home() {
 
         </div>
 
-        <div className="skills-grid">
+        <div className="skills-carousel">
+          <button
+            type="button"
+            className="skills-carousel-arrow skills-carousel-arrow-left"
+            onClick={() => scrollSkills(-1)}
+            aria-label="Scroll skills left"
+          >
+            ‹
+          </button>
 
-          {skills.map((skill, index) => (
+          <div
+            className="skills-grid"
+            ref={skillsTrackRef}
+            onPointerDown={handleSkillsPointerDown}
+            onPointerMove={handleSkillsPointerMove}
+            onPointerUp={handleSkillsPointerUp}
+            onPointerCancel={handleSkillsPointerUp}
+            onLostPointerCapture={handleSkillsPointerUp}
+            aria-label="Technology skills. Swipe or drag to see more."
+          >
+            {skills.map((skill, index) => (
+              <article className="skill-card" key={skill.name}>
+                <div className="skill-card-top">
+                  <span>{String(index + 1).padStart(2, "0")}</span>
+                  <span>{skill.type}</span>
+                </div>
+                <h3>{skill.name}</h3>
+                <div className="skill-progress">
+                  <span style={{ width: `${skill.level}%` }} />
+                </div>
+                <div className="skill-card-bottom">
+                  <span>Proficiency</span>
+                  <strong>{skill.level}%</strong>
+                </div>
+              </article>
+            ))}
+          </div>
 
-            <div className="skill-card" key={skill.name}>
-
-              <div className="skill-card-top">
-
-                <span>{String(index + 1).padStart(2, "0")}</span>
-
-                <span>{skill.type}</span>
-
-              </div>
-
-              <h3>{skill.name}</h3>
-
-              <div className="skill-progress">
-
-                <span
-
-                  style={{
-
-                    width: `${skill.level}%`,
-
-                  }}
-
-                />
-
-              </div>
-
-              <div className="skill-card-bottom">
-
-                <span>Proficiency</span>
-
-                <strong>{skill.level}%</strong>
-
-              </div>
-
-            </div>
-
-          ))}
-
+          <button
+            type="button"
+            className="skills-carousel-arrow skills-carousel-arrow-right"
+            onClick={() => scrollSkills(1)}
+            aria-label="Scroll skills right"
+          >
+            ›
+          </button>
         </div>
 
       </section>
@@ -1158,7 +1228,7 @@ export default function Home() {
 
             <div className="contact-panel">
 
-              <a href="https\://mail.google.com/mail/?view=cm&fs=1&to=mdrazahashmi1583%40gmail.com" target="_blank" rel="noreferrer" className="contact-card">
+              <a href="https://mail.google.com/mail/?view=cm&fs=1&to=mdrazahashmi1583%40gmail.com" target="_blank" rel="noreferrer" className="contact-card">
 
                 <div>
 
@@ -1184,7 +1254,7 @@ export default function Home() {
 
               <div className="contact-links">
 
-                <a href="https\://github.com/raza-hashmi99" target="_blank" rel="noreferrer" className="contact-small-card">
+                <a href="https://github.com/raza-hashmi99" target="_blank" rel="noreferrer" className="contact-small-card">
 
                   <span className="contact-link-main">
 
@@ -1202,7 +1272,7 @@ export default function Home() {
 
                 </a>
 
-                <a href="https\://www.linkedin.com/in/raza-hashmi-bb0233435" target="_blank" rel="noreferrer" className="contact-small-card">
+                <a href="https://www.linkedin.com/in/raza-hashmi-bb0233435" target="_blank" rel="noreferrer" className="contact-small-card">
 
                   <span className="contact-link-main">
 
