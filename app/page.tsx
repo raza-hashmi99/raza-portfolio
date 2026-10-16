@@ -180,6 +180,7 @@ const projects = [
 export default function Home() {
 
   const [loaded, setLoaded] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
     const [selectedProject, setSelectedProject] =
 
@@ -416,15 +417,15 @@ export default function Home() {
 
       <div className="grid-background" />
 
-      <header className="navbar">
+      <header className={`navbar${isMobileMenuOpen ? " mobile-menu-open" : ""}`}>
 
-        <a href="#" className="brand">
+        <a href="#" className="brand" onClick={() => setIsMobileMenuOpen(false)}>
 
-<span className="brand-mark">
+          <span className="brand-mark">
 
-  <img src="/favicon.ico" alt="Raza Hashmi logo" />
+            <img src="/favicon.ico" alt="Raza Hashmi logo" />
 
-</span>
+          </span>
 
           <span className="brand-name">
 
@@ -434,17 +435,30 @@ export default function Home() {
 
         </a>
 
-        <nav className="desktop-nav">
+        <button
+          type="button"
+          className="mobile-menu-toggle"
+          aria-label={isMobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
+          aria-expanded={isMobileMenuOpen}
+          aria-controls="portfolio-navigation"
+          onClick={() => setIsMobileMenuOpen((open) => !open)}
+        >
+          <span />
+          <span />
+          <span />
+        </button>
 
-          <a href="#about">About</a>
+        <nav id="portfolio-navigation" className={`desktop-nav${isMobileMenuOpen ? " is-open" : ""}`}>
 
-          <a href="#stack">Stack</a>
+          <a href="#about" onClick={() => setIsMobileMenuOpen(false)}>About</a>
 
-          <a href="#projects">Work</a>
+          <a href="#stack" onClick={() => setIsMobileMenuOpen(false)}>Stack</a>
 
-          <a href="#experience">Experience</a>
+          <a href="#projects" onClick={() => setIsMobileMenuOpen(false)}>Work</a>
 
-          <a href="#contact">Contact</a>
+          <a href="#experience" onClick={() => setIsMobileMenuOpen(false)}>Experience</a>
+
+          <a href="#contact" onClick={() => setIsMobileMenuOpen(false)}>Contact</a>
 
         </nav>
 
