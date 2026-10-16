@@ -181,6 +181,7 @@ export default function Home() {
 
   const [loaded, setLoaded] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const navbarRef = useRef<HTMLElement | null>(null);
 useEffect(() => {
   if (!isMobileMenuOpen) return;
 
@@ -427,8 +428,10 @@ useEffect(() => {
 
       <div className="grid-background" />
 
-      <header className={`navbar${isMobileMenuOpen ? " mobile-menu-open" : ""}`}>
-
+<header
+  ref={navbarRef}
+  className={`navbar${isMobileMenuOpen ? " mobile-menu-open" : ""}`}
+>
         <a href="#" className="brand" onClick={() => setIsMobileMenuOpen(false)}>
 
           <span className="brand-mark">
