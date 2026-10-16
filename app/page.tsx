@@ -181,18 +181,28 @@ export default function Home() {
 
   const [loaded, setLoaded] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const navbarRef = useRef<HTMLElement | null>(null);
-useEffect(() => {
-  if (!isMobileMenuOpen) return;
+  const navbarRef = useRef<HTMLElement>(null);
 
-  const previousOverflow = document.body.style.overflow;
+  useEffect(() => {
+    if (!isMobileMenuOpen) return;
 
-  document.body.style.overflow = "hidden";
+    const handleOutsidePointer = (event: PointerEvent) => {
+      if (
+        navbarRef.current &&
+        event.target instanceof Node &&
+        !navbarRef.current.contains(event.target)
+      ) {
+        setIsMobileMenuOpen(false);
+      }
+    };
 
-  return () => {
-    document.body.style.overflow = previousOverflow;
-  };
-}, [isMobileMenuOpen]);
+    document.addEventListener("pointerdown", handleOutsidePointer);
+
+    return () => {
+      document.removeEventListener("pointerdown", handleOutsidePointer);
+    };
+  }, [isMobileMenuOpen]);
+
     const [selectedProject, setSelectedProject] =
 
     useState<(typeof projects)[number] | null>(null);
@@ -291,16 +301,13 @@ useEffect(() => {
   }, []);
 
   useEffect(() => {
-
-    document.body.style.overflow = selectedProject ? "hidden" : "";
+    const shouldLockScroll = isMobileMenuOpen || selectedProject !== null;
+    document.body.style.overflow = shouldLockScroll ? "hidden" : "";
 
     return () => {
-
       document.body.style.overflow = "";
-
     };
-
-  }, [selectedProject]);
+  }, [isMobileMenuOpen, selectedProject]);
 
   useEffect(() => {
 
@@ -428,10 +435,11 @@ useEffect(() => {
 
       <div className="grid-background" />
 
-<header
-  ref={navbarRef}
-  className={`navbar${isMobileMenuOpen ? " mobile-menu-open" : ""}`}
->
+      <header
+        ref={navbarRef}
+        className={`navbar${isMobileMenuOpen ? " mobile-menu-open" : ""}`}
+      >
+
         <a href="#" className="brand" onClick={() => setIsMobileMenuOpen(false)}>
 
           <span className="brand-mark">
