@@ -181,7 +181,17 @@ export default function Home() {
 
   const [loaded, setLoaded] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+useEffect(() => {
+  if (!isMobileMenuOpen) return;
 
+  const previousOverflow = document.body.style.overflow;
+
+  document.body.style.overflow = "hidden";
+
+  return () => {
+    document.body.style.overflow = previousOverflow;
+  };
+}, [isMobileMenuOpen]);
     const [selectedProject, setSelectedProject] =
 
     useState<(typeof projects)[number] | null>(null);
