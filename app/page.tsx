@@ -183,31 +183,7 @@ export default function Home() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const navbarRef = useRef<HTMLElement>(null);
 
-  useEffect(() => {
-    if (!isMobileMenuOpen) return;
-
-    const handleOutsidePointer = (event: PointerEvent) => {
-      if (
-        navbarRef.current &&
-        event.target instanceof Node &&
-        !navbarRef.current.contains(event.target)
-      ) {
-        event.preventDefault();
-        event.stopPropagation();
-        setIsMobileMenuOpen(false);
-      }
-    };
-
-    document.addEventListener("pointerdown", handleOutsidePointer, true);
-
-    return () => {
-      document.removeEventListener("pointerdown", handleOutsidePointer, true);
-    };
-  }, [isMobileMenuOpen]);
-
-    const [selectedProject, setSelectedProject] =
-
-    useState<(typeof projects)[number] | null>(null);
+  const [selectedProject, setSelectedProject] = useState<(typeof projects)[number] | null>(null);
 
   const [activeShowcaseIndex, setActiveShowcaseIndex] = useState(0);
   const skillsTrackRef = useRef<HTMLDivElement | null>(null);
@@ -304,10 +280,16 @@ export default function Home() {
 
   useEffect(() => {
     const shouldLockScroll = isMobileMenuOpen || selectedProject !== null;
-    document.body.style.overflow = shouldLockScroll ? "hidden" : "";
+    const previousBodyOverflow = document.body.style.overflow;
+
+    if (shouldLockScroll) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = previousBodyOverflow;
+    }
 
     return () => {
-      document.body.style.overflow = "";
+      document.body.style.overflow = previousBodyOverflow;
     };
   }, [isMobileMenuOpen, selectedProject]);
 
@@ -436,6 +418,20 @@ export default function Home() {
       <div className="ambient ambient-two" />
 
       <div className="grid-background" />
+
+      {isMobileMenuOpen && (
+        <div
+          aria-hidden="true"
+          onClick={() => setIsMobileMenuOpen(false)}
+          style={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 999,
+            background: "transparent",
+            touchAction: "none",
+          }}
+        />
+      )}
 
       <header
         ref={navbarRef}
