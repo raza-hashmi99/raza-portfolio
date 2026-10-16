@@ -192,14 +192,16 @@ export default function Home() {
         event.target instanceof Node &&
         !navbarRef.current.contains(event.target)
       ) {
+        event.preventDefault();
+        event.stopPropagation();
         setIsMobileMenuOpen(false);
       }
     };
 
-    document.addEventListener("pointerdown", handleOutsidePointer);
+    document.addEventListener("pointerdown", handleOutsidePointer, true);
 
     return () => {
-      document.removeEventListener("pointerdown", handleOutsidePointer);
+      document.removeEventListener("pointerdown", handleOutsidePointer, true);
     };
   }, [isMobileMenuOpen]);
 
